@@ -1,0 +1,35 @@
+# Build folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.userprefs
+
+# Logs
+*.log
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Packages
+*.nupkg
+*.snupkg
+packages/
+
+# Publish outputs
+publish/
+.publish/
+
+# Configuration files
+appsettings.*.json
+appsettings.json
+
+.fake
