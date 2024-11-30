@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace LocalRecipes.Models
 {
-    public class Comment
+    public class Vote
     {
-      [Key]
-        public Guid CommentId { get; set; }
-
-        [Required]
-        public string Content { get; set; } = string.Empty;
+        [Key]
+        public Guid VoteId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

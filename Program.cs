@@ -1,5 +1,7 @@
+global using AutoMapper; 
 using System.Text;
 using LocalRecipes.Data;
+using LocalRecipes.Mappings;
 using LocalRecipes.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +11,15 @@ using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAutoMapper(typeof(MapperProfile)); 
+
 // Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -42,6 +47,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             throw new ArgumentNullException(nameof(key), "JWT Key is not configured");
         }
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters {
             ValidateIssuer = true,
             ValidateAudience = true,
