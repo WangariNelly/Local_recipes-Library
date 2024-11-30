@@ -10,12 +10,12 @@ using System.Text;
 
 namespace LocalRecipes.Services
 {
-    public class TokenService
+    public class TokenService: ITokenService
     {
-        private readonly string _key;
+        private readonly IConfiguration configuration;
 
-        public TokenService(string key) {
-            _key = key;
+        public TokenService(IConfiguration configuration) {
+            this.configuration = configuration;
         }
       public string GenerateToken(Guid userId, string username)
         {
@@ -25,7 +25,7 @@ namespace LocalRecipes.Services
                 new Claim(JwtRegisteredClaimNames.UniqueName, username)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
