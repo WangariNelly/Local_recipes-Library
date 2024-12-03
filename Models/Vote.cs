@@ -16,6 +16,8 @@ namespace LocalRecipes.Models
 
         public Guid RecipeId { get; set; }
 
+        public bool  IsUpvote { get; set; } 
+
         [ForeignKey("RecipeId")]
         public Recipe Recipe { get; set; } = null!;
 

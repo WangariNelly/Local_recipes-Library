@@ -30,6 +30,8 @@ namespace LocalRecipes.Services
 
             var token = new JwtSecurityToken(
                 claims: claims,
+                audience: configuration["Jwt:Audience"],
+                issuer: configuration["Jwt:Issuer"],   
                 expires: DateTime.Now.AddHours(12),
                 signingCredentials: creds);
 
