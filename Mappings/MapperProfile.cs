@@ -12,9 +12,9 @@ namespace LocalRecipes.Mappings
     {
         public MapperProfile()
         {
-            CreateMap<RecipeCreateDto, Recipe>()
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now)) 
-                .ForMember(dest => dest.Votes, opt => opt.MapFrom(src => 0));
+            CreateMap<RecipeCreateDto, Recipe>();
+                // .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now)) 
+                // .ForMember(dest => dest.Votes, opt => opt.MapFrom(src => 0));
             
         }
     }
