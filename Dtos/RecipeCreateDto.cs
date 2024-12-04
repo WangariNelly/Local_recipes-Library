@@ -26,5 +26,8 @@ namespace LocalRecipes.Dtos
         public int CookingTime { get; set; }
 
         public string? Image { get; set; }
+
+          [Required]
+       public UserDto User { get; set; } = new UserDto();
     }
 }
