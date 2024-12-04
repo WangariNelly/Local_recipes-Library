@@ -24,17 +24,14 @@ namespace LocalRecipes.Controllers
             this.context = context;
             this.mapper = mapper;
         }
-        
+        [Authorize]
         [HttpPost("newRecipe")]
-        //  [Authorize]
         public async Task<ActionResult<Recipe>> CreateRecipe([FromBody] RecipeCreateDto recipeDto)
         {
-   Console.WriteLine("We made it!");
-            foreach (var header in Request.Headers)
-    {
-        Console.WriteLine($"{header.Key}: {header.Value}");
-    }
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub");
+        // var userClaims = User.Claims.Select(c => $"{c.Type}: {c.Value}");
+        // Console.WriteLine(string.Join(", ", userClaims));
+
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
          if (userIdClaim == null)
     {
         return Unauthorized("User ID not found in token.");
@@ -42,10 +39,12 @@ namespace LocalRecipes.Controllers
 
     var userId = Guid.Parse(userIdClaim.Value);
     Console.WriteLine($"UserId from Claims: {userId}");
+
     var user = await context.Users.FindAsync(userId);
 
     if (user == null)
     {
+         Console.WriteLine("No matching user found in the database.");
         return Unauthorized("User not found.");
     }
 
@@ -54,7 +53,6 @@ namespace LocalRecipes.Controllers
 
     context.Recipes.Add(recipe);
     await context.SaveChangesAsync();
-    Console.WriteLine("Saved to Database");
 
     return CreatedAtAction("GetRecipe", new { id = recipe.RecipeId }, recipe);
         }
@@ -74,12 +72,14 @@ namespace LocalRecipes.Controllers
         [Authorize]
         public async Task<ActionResult> GetAllRecipes()
         {
-             Console.WriteLine("Saved to Database");
             var recipes = await context.Recipes.Include(r => r.User).ToListAsync();
-            return Ok(recipes);
+            var recipeDtos = mapper.Map<List<RecipeCreateDto>> (recipes);
+            
+            return Ok(recipeDtos);
         }
 
-        [HttpPost("add/{recipeId}")]
+
+ [HttpPost("{recipeId}/comments")]
 [Authorize]
 public async Task<ActionResult<Comment>> AddComment(Guid recipeId, [FromBody] CommentDto commentDto)
 {

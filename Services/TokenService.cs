@@ -19,11 +19,21 @@ namespace LocalRecipes.Services
         }
       public string GenerateToken(Guid userId, string username)
         {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, username)
-            };
+//             var claims = new[]
+//             {
+//                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+//                 new Claim(JwtRegisteredClaimNames.UniqueName, username),
+//                 new Claim(JwtRegisteredClaimNames.Exp, DateTime.UtcNow.AddHours(12).ToString()),
+// };
+                
+//             };
+
+var claims = new[]
+{
+    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+    new Claim(JwtRegisteredClaimNames.UniqueName, username),
+    new Claim(JwtRegisteredClaimNames.Exp, DateTime.UtcNow.AddHours(12).ToString())
+};
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
