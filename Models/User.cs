@@ -29,7 +29,7 @@ namespace LocalRecipes.Models
         // Navigation
         public ICollection<Recipe>? Recipes { get; set; }
         public ICollection<Comment>? Comments { get; set; }
-        public ICollection<Vote>? Votes { get; set; }
+        public ICollection<Vote>? Upvotes { get; set; }
    
     }
 }
