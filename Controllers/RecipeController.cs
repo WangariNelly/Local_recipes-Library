@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LocalRecipes.Data;
 using LocalRecipes.Dtos;
@@ -28,17 +29,20 @@ namespace LocalRecipes.Controllers
         [HttpPost("newRecipe")]
         public async Task<ActionResult<Recipe>> CreateRecipe([FromBody] RecipeCreateDto recipeDto)
         {
-        // var userClaims = User.Claims.Select(c => $"{c.Type}: {c.Value}");
-        // Console.WriteLine(string.Join(", ", userClaims));
+         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+     if (userId == null)
+    {
+        return Unauthorized("User not logged in");
+    }
+    
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
          if (userIdClaim == null)
     {
         return Unauthorized("User ID not found in token.");
     }
-
-    var userId = Guid.Parse(userIdClaim.Value);
-    Console.WriteLine($"UserId from Claims: {userId}");
+    // var userId = Guid.Parse(userIdClaim.Value);
+    // Console.WriteLine($"UserId from Claims: {userId}");
 
     var user = await context.Users.FindAsync(userId);
 
@@ -72,7 +76,18 @@ namespace LocalRecipes.Controllers
         [Authorize]
         public async Task<ActionResult> GetAllRecipes()
         {
-            var recipes = await context.Recipes.Include(r => r.User).ToListAsync();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    if (userId == null)
+    {
+        return Unauthorized("User not logged in");
+    }
+
+
+            var recipes = await context.Recipes
+            .Where(r => r.UserId.ToString() == userId) 
+            .Include(r => r.User)
+            .ToListAsync();
             var recipeDtos = mapper.Map<List<RecipeCreateDto>> (recipes);
             
             return Ok(recipeDtos);
